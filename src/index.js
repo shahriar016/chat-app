@@ -10,9 +10,15 @@ app.use(express.static(publicDir))
 
 const server = http.createServer(app)
 const io = socketio(server)
+let count = 0
 
-io.on('connection', () => {
-    console.log("New Web socket")
+io.on('connection', (socket) => {
+    socket.emit("countUpdated", count)
+    socket.on("increment",() => {
+        count++
+        socket.emit("countUpdated",count) //emit only to this socket
+        //io.emit("countUpdated",count) // emit to all socket connected to server
+    })
 })
 
 const port = process.env.port || 8082
