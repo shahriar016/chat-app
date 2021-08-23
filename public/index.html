@@ -10,8 +10,9 @@
     <div id="message"></div>
     <form id="msg_form" >
         <input type="text" name="message", placeholder="Type your message...">
-        <input type="submit" value="send">
+        <input id="msg_btn" type="submit" value="send">
     </form>
+    <button onclick="getGeoLocation(this)">Get Location</button>
     <script src="/socket.io/socket.io.js"></script> <!--activate socket.io in js -->
     <script src="/js/chat.js"></script>
 </body>
