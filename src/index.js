@@ -13,8 +13,8 @@ const io = socketio(server)
 let count = 0
 
 io.on('connection', (socket) => {
-    socket.emit("countUpdated", count)
     socket.emit("message", "Welcome to the Chap-App")
+    socket.broadcast.emit("message", "A New User is Connected")
     socket.on("message", (msg) => {
         io.emit("message", msg)
     })
@@ -23,6 +23,9 @@ io.on('connection', (socket) => {
         // count++
         //socket.emit("countUpdated",count) //emit only to this socket
         //io.emit("countUpdated",count) // emit to all socket connected to server
+    })
+    socket.on("disconnect", () => {
+        io.emit("message", "A User Has Left")
     })
 })
 
