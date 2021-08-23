@@ -14,9 +14,14 @@ let count = 0
 
 io.on('connection', (socket) => {
     socket.emit("countUpdated", count)
+    socket.emit("message", "Welcome to the Chap-App")
+    socket.on("message", (msg) => {
+        io.emit("message", msg)
+    })
+
     socket.on("increment",() => {
-        count++
-        socket.emit("countUpdated",count) //emit only to this socket
+        // count++
+        //socket.emit("countUpdated",count) //emit only to this socket
         //io.emit("countUpdated",count) // emit to all socket connected to server
     })
 })
