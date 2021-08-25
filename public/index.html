@@ -4,16 +4,21 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>chat-app</title>
+    <link rel="stylesheet" href="/css/styles.min.css">
 </head>
 <body>
-    <div id="message"></div>
-    <form id="msg_form" >
-        <input type="text" name="message", placeholder="Type your message...">
-        <input id="msg_btn" type="submit" value="send">
-    </form>
-    <button onclick="getGeoLocation(this)">Get Location</button>
-    <script src="/socket.io/socket.io.js"></script> <!--activate socket.io in js -->
-    <script src="/js/chat.js"></script>
+    <div class="centered-form">
+        <div class="cetered-form__box">
+            <h1>Join</h1>
+            <form action="/chat.html">
+                <label>Username</label>
+                <input type="text" name="username" placeholder="Display Name..."required>
+                <label>Room</label>
+                <input type="text" name="room" placeholder="Room..." required>
+                <button>Join</button>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

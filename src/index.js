@@ -2,6 +2,7 @@ const express = require("express")
 const path = require("path")
 const http = require("http")
 const socketio = require("socket.io") // socketio is a function
+const {generateMessage, generateLocationMessage} = require("./utils/messages")
 const { isObject, callbackify } = require("util")
 
 const app = express()
@@ -13,25 +14,23 @@ const io = socketio(server)
 let count = 0
 
 io.on('connection', (socket) => {
-    socket.emit("message", "Welcome to the Chap-App")
-    socket.broadcast.emit("message", "A New User is Connected")
+    socket.on('join', ({username, room}) => {
+        console.log(username, room)
+        socket.join(room)
+        socket.emit("message", generateMessage("Welcome to the Chap-App"))
+        socket.broadcast.to(room).emit("message", generateMessage("A New User is Connected"))
+    })
     socket.on("message", (msg,callback) => {
-        io.emit("message", msg)
-        callback("message received and processed successfully")
+        io.emit("message", generateMessage(msg))
+        callback()
     })
-
-    socket.on("increment",() => {
-        // count++
-        //socket.emit("countUpdated",count) //emit only to this socket
-        //io.emit("countUpdated",count) // emit to all socket connected to server
-    })
-    socket.on('sendLocation', (coords, callback) => {
-        console.log(coords)
-        socket.broadcast.emit('message',`https://www.google.com/maps?q=${coords.latitude},${coords.longitude}`)
-        callback("success")
+    socket.on('locationMessage', (url, callback) => {
+        //console.log(coords)
+        io.emit('locationMessage',generateLocationMessage(url))
+        callback()
     })
     socket.on("disconnect", () => {
-        io.emit("message", "A User Has Left")
+        io.emit("message", generateMessage("A User Has Left"))
     })
 
 })
