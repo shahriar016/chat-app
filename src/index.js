@@ -4,6 +4,7 @@ const http = require("http")
 const socketio = require("socket.io") // socketio is a function
 const {generateMessage, generateLocationMessage} = require("./utils/messages")
 const { isObject, callbackify } = require("util")
+const {addUser, getUser, removeUser, getUserInRoom} = require("./utils/users")
 
 const app = express()
 const publicDir = path.join(__dirname, '../public')
@@ -14,23 +15,33 @@ const io = socketio(server)
 let count = 0
 
 io.on('connection', (socket) => {
-    socket.on('join', ({username, room}) => {
-        console.log(username, room)
-        socket.join(room)
-        socket.emit("message", generateMessage("Welcome to the Chap-App"))
-        socket.broadcast.to(room).emit("message", generateMessage("A New User is Connected"))
+    socket.on('join', (options, callback) => {
+        //console.log(username, room)
+        const {error, user} = addUser({id:socket.id, ...options})
+        if(error) {
+            return callback(error)
+        }
+        socket.join(user.room)
+        socket.emit("message", generateMessage("Welcome to the Chap-App", "Admin"))
+        socket.broadcast.to(user.room).emit("message", generateMessage("A New User is Connected", "Admin"))
     })
     socket.on("message", (msg,callback) => {
-        io.emit("message", generateMessage(msg))
+        const user = getUser(socket.id)
+        io.to(user.room).emit("message", generateMessage(msg, user.username))
         callback()
     })
     socket.on('locationMessage', (url, callback) => {
         //console.log(coords)
-        io.emit('locationMessage',generateLocationMessage(url))
+        const user = getUser(socket.id)
+        io.to(user.room).emit('locationMessage',generateLocationMessage(url, user.username))
         callback()
     })
     socket.on("disconnect", () => {
-        io.emit("message", generateMessage("A User Has Left"))
+        const user = getUser(socket.id)
+        if(user) {
+            removeUser(user.id)
+            io.to(user.room).emit("message", generateMessage("A User Has Left", "Admin"))
+        }
     })
 
 })

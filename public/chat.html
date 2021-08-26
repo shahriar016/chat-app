@@ -16,7 +16,7 @@
             <div id="messages" class="chat__messages"></div>
             <div class="compose">
                 <form id="message-form" >
-                    <input type="text" name="message", placeholder="Type your message...">
+                    <input type="text" name="message", placeholder="Type your message..."required autocomplete="off">
                     <input id="msg_btn" type="submit" value="send">
                 </form>
                 <button id="send-location"onclick="getGeoLocation(this)">Get Location</button>
@@ -26,7 +26,7 @@
     <script id="message-template" type="text/html">
         <div class="message">
             <p>
-                <span class="message__name">Some User Name</span>
+                <span class="message__name">{{username}}</span>
                 <span class="message__meta">{{createdAt}}</span>
             </p>
             <p>{{message}}</p> <!-- message is a key from mustache arguments-->
@@ -35,10 +35,10 @@
     <script id="location-template" type="text/html">
         <div class="message">
             <p>
-                <span class="message__name">Some User Name</span>
+                <span class="message__name">{{username}}</span>
                 <span class="message__meta">{{createdAt}}</span>
             </p>
-            <p><a href="{{message}}">User's Current Location</a></p> <!-- message is a key from mustache arguments-->
+            <p><a href="{{message}}">{{username}}'s Current Location</a></p> <!-- message is a key from mustache arguments-->
         </div>
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.min.js"></script>

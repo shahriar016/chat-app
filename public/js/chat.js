@@ -12,17 +12,40 @@ let locationTemplate = document.querySelector("#location-template").innerHTML
 // options
 const {username, room} = Qs.parse(location.search, {ignoreQueryPrefix: true})
 
-socket.emit('join', {username, room})
+socket.emit('join', {username, room}, (error) => {
+    if(error) alert(error)
+    location.href = '/'
+})
+
+const autoscroll = () => {
+    const newMsg = msg_box.lastElementChild
+
+    const msgStyles = getComputedStyle(newMsg)
+    const msgMargin = parseInt(msgStyles.marginBottom)
+    const msgHeight = newMsg.offsetHeight + msgMargin
+    // visible height
+    const visibleHeight = msg_box.offsetHeight
+    // height of the message container
+    const boxHeight = msg_box.scrollHeight 
+    // how far have I scrolled?
+    const scrollOffset = msg_box.scrollTop + visibleHeight
+    //console.log(`boxHeight: ${boxHeight} crollOffset: ${scrollOffset} visibleHeight: ${visibleHeight}`)
+    if(scrollOffset >= boxHeight -  msgHeight) {
+        msg_box.scrollTop = msg_box.scrollHeight
+    }
+}
 
 socket.on("message", (msg) => {
     // console.log(msg)
     // msg_box.innerHTML += `<p> ${msg}</p>`
     const html = Mustache.render(messageTemplate,{
         message: msg.text,
+        username: msg.username,
         createdAt: moment(msg.createdAt).format("hh:mm a")
     })
     //console.log(html)
     msg_box.insertAdjacentHTML('beforeend', html)
+    autoscroll()
 })
 
 
@@ -31,10 +54,12 @@ socket.on("locationMessage", (msg) => {
     // msg_box.innerHTML += `<p> ${msg}</p>`
     const html = Mustache.render(locationTemplate,{
         url: msg.url,
+        username: msg.username,
         createdAt: moment(msg.createdAt).format("hh:mm a")
     })
     //console.log(html)
     msg_box.insertAdjacentHTML('beforeend', html)
+    autoscroll()
 })
 
 var getGeoLocation = function(e) {
