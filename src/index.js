@@ -5,7 +5,7 @@ const socketio = require("socket.io") // socketio is a function
 const {generateMessage, generateLocationMessage} = require("./utils/messages")
 const { isObject, callbackify } = require("util")
 const {addUser, getUser, removeUser, getUserInRoom} = require("./utils/users")
-
+// console.log("Hello World There")
 const app = express()
 const publicDir = path.join(__dirname, '../public')
 app.use(express.static(publicDir))
