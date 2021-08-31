@@ -52,13 +52,13 @@ socket.on("message", (msg) => {
 socket.on("locationMessage", (msg) => {
     //console.log(msg)
     // msg_box.innerHTML += `<p> ${msg}</p>`
-    const msg = Mustache.render(locationTemplate,{
+    const message = Mustache.render(locationTemplate,{
         url: msg.url,
         username: msg.username,
         createdAt: moment(msg.createdAt).format("hh:mm a")
     })
     //console.log(html)
-    msg_box.insertAdjacentHTML('beforeend', msg)
+    msg_box.insertAdjacentHTML('beforeend', message)
     autoscroll()
 })
 
@@ -87,6 +87,7 @@ msg_form.addEventListener("submit", (e) => {
     const msg = e.target.elements.message.value
     //console.log(msg)
     socket.emit("message", msg , (message) => {
+        console.log("Hi There")
         console.log("acknowledgement:", message)
         msg_btn.removeAttribute("disabled")
         msg_input.value = ''
